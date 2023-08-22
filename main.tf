@@ -2,9 +2,9 @@ provider "aws" {
   region     = "us-west-2"
  }
 resource "aws_instance" "Jendoc" {
-  key_name               = "terrakey"
-  ami                    = "ami-03f65b8614a860c29"
-  instance_type          = "t2.medium"
+  key_name               = var.keyname
+  ami                    = var.amiid
+  instance_type          = var.instype
   network_interface {
     network_interface_id = aws_network_interface.mynet.id
     device_index         = 0
@@ -15,12 +15,12 @@ resource "aws_instance" "Jendoc" {
     encrypted = true
   }
   tags = {
-    Name = "Jendoc"
+    Name = var.vmname
   }
   user_data = file("jendocker.sh")
 }
 resource "aws_vpc" "myvpc" {
-  cidr_block = "172.31.0.0/16"
+  cidr_block = var.vpcid
   tags = {
     Name = "myvpc"
   }
@@ -30,23 +30,16 @@ resource "aws_vpc" "myvpc" {
 resource "aws_security_group" "mysg" {
   description = "New security group"
   vpc_id      = aws_vpc.myvpc.id
-   ingress {
-    description      = "Jenkins"
-    from_port        = 8080
-    to_port          = 8080
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
   ingress {
-    description      = "ALL"
+    description      = "All"
     from_port        = 0
     to_port          = 0
     protocol         = "-1"
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
   }
-  egress {
-    description      = "ALL"
+ egress {
+    description      = "All"
     from_port        = 0
     to_port          = 0
     protocol         = "-1"
@@ -59,10 +52,20 @@ resource "aws_security_group" "mysg" {
 }
 resource "aws_subnet" "mysubnet" {
   vpc_id            = aws_vpc.myvpc.id
-  cidr_block        = "172.31.0.0/20"
-  availability_zone = "us-west-2a"
+  cidr_block        = var.subnetid1
+  availability_zone = var.azone1
   tags = {
-    Name = "Sub01"
+    Name = var.subname1
+  }
+  map_public_ip_on_launch                     = true
+  enable_resource_name_dns_a_record_on_launch = true
+}
+resource "aws_subnet" "mysubnet1" {
+  vpc_id            = aws_vpc.myvpc.id
+  cidr_block        = var.subnetid2
+  availability_zone = var.azone2
+  tags = {
+    Name = var.subname2
   }
   map_public_ip_on_launch                     = true
   enable_resource_name_dns_a_record_on_launch = true
@@ -70,7 +73,14 @@ resource "aws_subnet" "mysubnet" {
 resource "aws_network_interface" "mynet" {
   subnet_id = aws_subnet.mysubnet.id
   tags = {
-    Name = "NIF01"
+    Name = var.Netif1
+  }
+  security_groups = [aws_security_group.mysg.id]
+}
+resource "aws_network_interface" "mynet1" {
+  subnet_id = aws_subnet.mysubnet1.id
+  tags = {
+    Name = var.Netif2
   }
   security_groups = [aws_security_group.mysg.id]
 }
@@ -90,4 +100,40 @@ resource "aws_route_table" "myroute" {
 resource "aws_route_table_association" "myroutable" {
   subnet_id      = aws_subnet.mysubnet.id
   route_table_id = aws_route_table.myroute.id
+}
+resource "aws_route_table_association" "myroutable1" {
+  subnet_id      = aws_subnet.mysubnet1.id
+  route_table_id = aws_route_table.myroute.id
+}
+# web app load balancer
+resource "aws_lb" "exloadbal" {
+  name = "webexternalloadbalancer"
+  internal = false
+  load_balancer_type = "application"
+  security_groups = [aws_security_group.mysg.id]
+  subnets = [aws_subnet.mysubnet.id,aws_subnet.mysubnet1.id ]
+  enable_deletion_protection = false
+  tags = {
+    Name = "App Load balancer"
+  }
+}
+resource "aws_lb_target_group" "albtarget" {
+  name = "appbaltg"
+  port = 80
+  protocol = "HTTP"
+  vpc_id = aws_vpc.myvpc.id
+}
+resource "aws_lb_target_group_attachment" "tgroup" {
+  target_group_arn = aws_lb_target_group.albtarget.arn
+  target_id = aws_instance.Jendoc.id
+  port = 80
+}
+resource "aws_lb_listener" "externalelb" {
+  load_balancer_arn = aws_lb.exloadbal.arn
+  port = 80
+  protocol = "HTTP"
+  default_action {
+    type = "forward"
+    target_group_arn = aws_lb_target_group.albtarget.arn
+  }
 }

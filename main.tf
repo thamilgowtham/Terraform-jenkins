@@ -1,5 +1,5 @@
 provider "aws" {
-  region     = "us-west-2"
+  region     = var.rname
  }
 resource "aws_instance" "Jendoc" {
   key_name               = var.keyname

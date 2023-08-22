@@ -8,6 +8,9 @@ echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
   /etc/apt/sources.list.d/jenkins.list > /dev/null
 sudo apt-get update -y 
 sudo apt-get install jenkins -y
+sudo systemctl enable jenkins
+sudo systemctl start jenkins
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 sudo apt update -y
 sudo curl -fsSL https://get.docker.com -o install-docker.sh
 sudo sh install-docker.sh -y 

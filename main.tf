@@ -30,6 +30,13 @@ resource "aws_vpc" "myvpc" {
 resource "aws_security_group" "mysg" {
   description = "New security group"
   vpc_id      = aws_vpc.myvpc.id
+   ingress {
+    description      = "Jenkins"
+    from_port        = 8080
+    to_port          = 8080
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
   ingress {
     description      = "ALL"
     from_port        = 0

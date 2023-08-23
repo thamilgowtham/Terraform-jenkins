@@ -6,7 +6,7 @@ resource "aws_instance" "Jendoc" {
   ami                    = var.amiid
   instance_type          = var.instype
   network_interface {
-    network_interface_id = aws_network_interface.mynet.id
+    network_interface_id = aws_network_interface.mynet1.id
     device_index         = 0
   }
   root_block_device {
@@ -36,7 +36,6 @@ resource "aws_security_group" "mysg" {
     to_port          = 0
     protocol         = "-1"
     cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
   }
  egress {
     description      = "All"
@@ -44,13 +43,12 @@ resource "aws_security_group" "mysg" {
     to_port          = 0
     protocol         = "-1"
     cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
   }
   tags = {
     Name = "Mynewsg"
   }
 }
-resource "aws_subnet" "mysubnet" {
+resource "aws_subnet" "mysubnet1" {
   vpc_id            = aws_vpc.myvpc.id
   cidr_block        = var.subnetid1
   availability_zone = var.azone1
@@ -60,7 +58,7 @@ resource "aws_subnet" "mysubnet" {
   map_public_ip_on_launch                     = true
   enable_resource_name_dns_a_record_on_launch = true
 }
-resource "aws_subnet" "mysubnet1" {
+/*resource "aws_subnet" "mysubnet2" {
   vpc_id            = aws_vpc.myvpc.id
   cidr_block        = var.subnetid2
   availability_zone = var.azone2
@@ -69,21 +67,21 @@ resource "aws_subnet" "mysubnet1" {
   }
   map_public_ip_on_launch                     = true
   enable_resource_name_dns_a_record_on_launch = true
-}
-resource "aws_network_interface" "mynet" {
-  subnet_id = aws_subnet.mysubnet.id
+}*/
+resource "aws_network_interface" "mynet1" {
+  subnet_id = aws_subnet.mysubnet1.id
   tags = {
     Name = var.Netif1
   }
   security_groups = [aws_security_group.mysg.id]
 }
-resource "aws_network_interface" "mynet1" {
-  subnet_id = aws_subnet.mysubnet1.id
+/*resource "aws_network_interface" "mynet2" {
+  subnet_id = aws_subnet.mysubnet2.id
   tags = {
     Name = var.Netif2
   }
   security_groups = [aws_security_group.mysg.id]
-}
+}*/
 resource "aws_internet_gateway" "mygate" {
   vpc_id = aws_vpc.myvpc.id
 }
@@ -97,16 +95,16 @@ resource "aws_route_table" "myroute" {
     Name = "Myroute"
   }
 }
-resource "aws_route_table_association" "myroutable" {
-  subnet_id      = aws_subnet.mysubnet.id
-  route_table_id = aws_route_table.myroute.id
-}
 resource "aws_route_table_association" "myroutable1" {
   subnet_id      = aws_subnet.mysubnet1.id
   route_table_id = aws_route_table.myroute.id
 }
-# web app load balancer
-/*resource "aws_lb" "exloadbal" {
+/*resource "aws_route_table_association" "myroutable2" {
+  subnet_id      = aws_subnet.mysubnet2.id
+  route_table_id = aws_route_table.myroute.id
+}*/
+/*# web app load balancer
+resource "aws_lb" "exloadbal" {
   name = "webexternalloadbalancer"
   internal = false
   load_balancer_type = "application"
@@ -137,3 +135,8 @@ resource "aws_lb_listener" "externalelb" {
     target_group_arn = aws_lb_target_group.albtarget.arn
   }
 }*/
+
+  
+
+  
+

@@ -106,7 +106,7 @@ resource "aws_route_table_association" "myroutable1" {
   route_table_id = aws_route_table.myroute.id
 }
 # web app load balancer
-resource "aws_lb" "exloadbal" {
+/*resource "aws_lb" "exloadbal" {
   name = "webexternalloadbalancer"
   internal = false
   load_balancer_type = "application"
@@ -136,4 +136,4 @@ resource "aws_lb_listener" "externalelb" {
     type = "forward"
     target_group_arn = aws_lb_target_group.albtarget.arn
   }
-}
+}*/

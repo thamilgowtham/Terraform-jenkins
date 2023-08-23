@@ -33,7 +33,7 @@ resource "aws_instance" "Sonarnexus_EC2" {
   tags = {
     Name = var.vmname2
   }
-  user_data = file("sonarnexus.sh")
+  user_data = file("sonarqube.sh")
 }
 resource "aws_vpc" "myvpc" {
   cidr_block = var.vpcid

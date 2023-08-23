@@ -18,3 +18,9 @@ sudo apt install maven -y
 sudo apt-add-repository ppa:ansible/ansible -y
 sudo apt update -y 
 sudo apt install ansible -y
+sudo curl -LO "https://dl.k8s.io/release/$(curl -LO https://dl.k8s.io/release/v1.25.3/bin/linux/amd64/kubectl)/bin/linux/amd64/kubectl"
+sudo curl -LO "https://dl.k8s.io/$(curl -LO https://dl.k8s.io/release/v1.25.3/bin/linux/amd64/kubectl)/bin/linux/amd64/kubectl.sha256"
+sudo echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.25.3/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+sudo apt-get update
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+sudo apt-get install -y kubectl

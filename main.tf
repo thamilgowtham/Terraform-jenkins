@@ -1,7 +1,7 @@
 provider "aws" {
   region     = var.rname
  }
-resource "aws_instance" "Jendoc" {
+resource "aws_instance" "Jendoc_EC2" {
   key_name               = var.keyname
   ami                    = var.amiid
   instance_type          = var.instype
@@ -12,12 +12,28 @@ resource "aws_instance" "Jendoc" {
   root_block_device {
     volume_size = 20
     volume_type = "gp3"
-    encrypted = true
   }
   tags = {
-    Name = var.vmname
+    Name = var.vmname1
   }
   user_data = file("jendocker.sh")
+}
+resource "aws_instance" "Sonarnexus_EC2" {
+  key_name               = var.keyname
+  ami                    = var.amiid
+  instance_type          = var.instype
+  network_interface {
+    network_interface_id = aws_network_interface.mynet2.id
+    device_index         = 0
+  }
+  root_block_device {
+    volume_size = 20
+    volume_type = "gp3"
+  }
+  tags = {
+    Name = var.vmname2
+  }
+  user_data = file("sonarnexus.sh")
 }
 resource "aws_vpc" "myvpc" {
   cidr_block = var.vpcid
@@ -37,8 +53,8 @@ resource "aws_security_group" "mysg" {
     protocol         = "-1"
     cidr_blocks      = ["0.0.0.0/0"]
   }
- egress {
-    description      = "All"
+  egress {
+    description      = "ALL"
     from_port        = 0
     to_port          = 0
     protocol         = "-1"
@@ -58,10 +74,27 @@ resource "aws_subnet" "mysubnet1" {
   map_public_ip_on_launch                     = true
   enable_resource_name_dns_a_record_on_launch = true
 }
+resource "aws_subnet" "mysubnet2" {
+  vpc_id            = aws_vpc.myvpc.id
+  cidr_block        = var.subnetid2
+  availability_zone = var.azone1
+  tags = {
+    Name = var.subname2
+  }
+  map_public_ip_on_launch                     = true
+  enable_resource_name_dns_a_record_on_launch = true
+}
 resource "aws_network_interface" "mynet1" {
   subnet_id = aws_subnet.mysubnet1.id
   tags = {
     Name = var.Netif1
+  }
+  security_groups = [aws_security_group.mysg.id]
+}
+resource "aws_network_interface" "mynet2" {
+  subnet_id = aws_subnet.mysubnet2.id
+  tags = {
+    Name = var.Netif2
   }
   security_groups = [aws_security_group.mysg.id]
 }
@@ -80,5 +113,9 @@ resource "aws_route_table" "myroute" {
 }
 resource "aws_route_table_association" "myroutable1" {
   subnet_id      = aws_subnet.mysubnet1.id
+  route_table_id = aws_route_table.myroute.id
+}
+resource "aws_route_table_association" "myroutable2" {
+  subnet_id      = aws_subnet.mysubnet2.id
   route_table_id = aws_route_table.myroute.id
 }

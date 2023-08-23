@@ -15,3 +15,6 @@ sudo curl -fsSL https://get.docker.com -o install-docker.sh
 sudo sh install-docker.sh -y 
 sudo service docker start
 sudo apt install maven -y
+sudo apt-add-repository ppa:ansible/ansible -y
+sudo apt update -y 
+sudo apt install ansible -y

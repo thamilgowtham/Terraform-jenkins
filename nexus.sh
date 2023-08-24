@@ -29,3 +29,4 @@ WantedBy=multi-user.target' > /etc/systemd/system/nexus.service
 sudo systemctl daemon-reload
 sudo systemctl enable nexus.service
 sudo systemctl start nexus.service
+sudo hostnamectl set-hostname nexus

@@ -52,6 +52,23 @@ resource "aws_instance" "Nexus_EC2" {
   }
   user_data = file("nexus.sh")
 }
+resource "aws_instance" "Kmaster_EC2" {
+  key_name               = var.keyname
+  ami                    = var.amiid
+  instance_type          = var.instype
+  network_interface {
+    network_interface_id = aws_network_interface.mynet4.id
+    device_index         = 0
+  }
+  root_block_device {
+    volume_size = 20
+    volume_type = "gp3"
+  }
+  tags = {
+    Name = var.vmname4
+  }
+  user_data = file("kubemaster.sh")
+}
 resource "aws_vpc" "myvpc" {
   cidr_block = var.vpcid
   tags = {
@@ -122,6 +139,13 @@ resource "aws_network_interface" "mynet3" {
   }
   security_groups = [aws_security_group.mysg.id]
 }
+resource "aws_network_interface" "mynet4" {
+  subnet_id = aws_subnet.mysubnet1.id
+  tags = {
+    Name = var.Netif4
+  }
+  security_groups = [aws_security_group.mysg.id]
+}
 resource "aws_internet_gateway" "mygate" {
   vpc_id = aws_vpc.myvpc.id
 }
@@ -143,5 +167,3 @@ resource "aws_route_table_association" "myroutable2" {
   subnet_id      = aws_subnet.mysubnet2.id
   route_table_id = aws_route_table.myroute.id
 }
-
- 

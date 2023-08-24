@@ -7,6 +7,12 @@ variable "vmname2" {
 variable "vmname3" {
   default = "NexusEC2"
 }
+variable "vmname4" {
+  default = "KmasterEC2"
+}
+variable "vmname5" {
+  default = "KnodeEC2"
+}
 variable "azone1" {
   default = "us-west-2a" 
 }
@@ -28,6 +34,12 @@ variable "Netif2" {
 variable "Netif3" {
   default = "NIF03"
 }
+variable "Netif4" {
+  default = "NIF04"
+}
+variable "Netif5" {
+  default = "NIF05"
+}
 variable "subnetid1" {
   default = "10.0.1.0/24"
 }
@@ -41,7 +53,7 @@ variable "rname" {
   default = "us-west-2"
 }
 variable "amiid" {
-  default = "ami-03f65b8614a860c29" 
+  default = "ami-0c65adc9a5c1b5d7c" 
 }
 variable "instype" {
   default = "t2.medium"

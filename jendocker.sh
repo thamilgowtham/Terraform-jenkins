@@ -10,20 +10,20 @@ sudo apt-get update -y
 sudo apt-get install jenkins -y
 sudo systemctl enable jenkins
 sudo systemctl start jenkins
+# Install Docker
 sudo apt update -y
 sudo curl -fsSL https://get.docker.com -o install-docker.sh
 sudo sh install-docker.sh -y 
 sudo service docker start
+# Install Maven
 sudo apt install maven -y
 sudo apt-add-repository ppa:ansible/ansible -y
 sudo apt update -y 
 sudo apt install ansible -y
+# Install Kubectl
 sudo apt-get update
-sudo apt-get install -y apt-transport-https ca-certificates curl
-sudo curl -LO "https://dl.k8s.io/release/$(curl -LO https://dl.k8s.io/release/v1.25.3/bin/linux/amd64/kubectl)/bin/linux/amd64/kubectl"
-sudo curl -LO "https://dl.k8s.io/$(curl -LO https://dl.k8s.io/release/v1.28.0/bin/linux/amd64/kubectl)/bin/linux/amd64/kubectl.sha256"
-sudo echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28.0/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+sudo curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+sudo echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list
 sudo apt-get update -y
-sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-sudo apt-get install -y kubectl
-sudo hostnamectl set-hostname Jendoc
+sudo apt install -y kubectl
+sudo hostnamectl set-hostname Jendocansi

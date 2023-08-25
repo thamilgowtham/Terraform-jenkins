@@ -1,5 +1,5 @@
 variable "vmname1" {
-  default = "JendocEC2"
+  default = "JenDocAnsiEC2"
 }
 variable "vmname2" {
   default = "SonarEC2"
@@ -13,6 +13,9 @@ variable "vmname4" {
 variable "vmname5" {
   default = "KnodeEC2"
 }
+variable "vmname6" {
+  default = "PromgrafaEC2"
+}
 variable "azone1" {
   default = "us-west-2a" 
 }
@@ -24,6 +27,9 @@ variable "subname1" {
 }
 variable "subname2" {
   default = "Sub02"
+}
+variable "subname3" {
+  default = "Sub03"
 }
 variable "Netif1" {
   default = "NIF01"
@@ -40,11 +46,17 @@ variable "Netif4" {
 variable "Netif5" {
   default = "NIF05"
 }
+variable "Netif6" {
+  default = "NIF06"
+}
 variable "subnetid1" {
   default = "10.0.1.0/24"
 }
 variable "subnetid2" {
   default = "10.0.2.0/24"
+}
+variable "subnetid3" {
+  default = "10.0.3.0/24"
 }
 variable "keyname" {
   default = "terrakey"
@@ -54,6 +66,9 @@ variable "rname" {
 }
 variable "amiid" {
   default = "ami-0c65adc9a5c1b5d7c" 
+}
+variable "amiid2" {
+  default = "ami-03f65b8614a860c29" 
 }
 variable "instype" {
   default = "t2.medium"

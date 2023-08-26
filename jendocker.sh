@@ -15,8 +15,21 @@ sudo apt update -y
 sudo curl -fsSL https://get.docker.com -o install-docker.sh
 sudo sh install-docker.sh -y 
 sudo service docker start
+sudo useradd jenkins
+usermod -aG docker jenkins
+sudo chown -R jenkins:jenkins /home/jenkins/.docker
+sudo chmod 666 /var/run/docker.sock
 # Install Maven
-sudo apt install maven -y
+sudo apt update -y
+sudo wget https://downloads.apache.org/maven/maven-3/3.9.4/binaries/apache-maven-3.9.4-bin.tar.gz -P /tmp
+sudo tar xf /tmp/apache-maven-3.9.4-bin.tar.gz -C /opt
+sudo ln -s /opt/apache-maven-3.9.4 /opt/app
+sudo echo 'export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+export M2_HOME=/opt/app
+export MAVEN_HOME=/opt/app
+export PATH=${M2_HOME}/bin:${PATH}' > /etc/profile.d/maven.sh
+source /etc/profile.d/maven.sh
+# Install ansible 
 sudo apt-add-repository ppa:ansible/ansible -y
 sudo apt update -y 
 sudo apt install ansible -y

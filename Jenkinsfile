@@ -1,0 +1,65 @@
+pipeline{
+    agent any
+    tools {
+     maven 'maven'   
+    }
+    stages {
+        stage('Git Checkout') {
+            steps {
+                git url:'https://github.com/thamilgowtham/Terraform-jenkins.git', branch: 'main'
+            }
+        }
+         stage('Maven Build'){
+           steps{
+              sh 'mvn clean package'
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps{
+              script{
+                 withSonarQubeEnv(installationName: 'sonarqube',credentialsId: 'sonar-token') {
+                 sh 'mvn sonar:sonar'
+                 }
+              }
+           }
+       }
+       stage('Upload Jar file to Nexus'){
+            steps{
+             nexusArtifactUploader artifacts: [
+  	    	[
+   	  	    artifactId: 'spring-boot-mongo',
+   		    classifier: '', 
+   		    file: 'target/spring-boot-mongo-1.0.jar',
+   		    type: 'jar'
+  		    ]
+	       ], 
+	    credentialsId: 'nexus-credentials', 
+	    groupId: 'com.mt', 
+	    nexusUrl: '34.216.109.0:8081', 
+	    nexusVersion: 'nexus3', 
+	    protocol: 'http', 
+	    repository: 'springapprepo', 
+	    version: '1.0'
+             }
+        }
+        stage('Docker build & Docker image push to Dockerhub'){
+         steps{
+           script{
+           withCredentials([string(credentialsId: 'dochub_id', variable: 'docker_cred')]) {
+             sh '''
+             docker build -t westuser/spring-boot-mongo .
+             docker login -u westuser -p ${docker_cred} 
+             docker push westuser/spring-boot-mongo
+             docker rmi westuser/spring-boot-mongo
+             '''
+                 }
+               }
+            }
+        }
+        stage('Deploy Application in K8s Cluster'){
+            steps {
+                sh 'kubectl apply -f mongodeploy.yml'
+            }
+        }
+    }
+}

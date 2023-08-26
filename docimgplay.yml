@@ -1,0 +1,10 @@
+- hosts: localhost
+  become: false
+  tasks:
+    - name: creating docker image
+      command: docker build -t westuser/spring-boot-mongo .
+    - name: push the img to dockerhub
+      command: docker push westuser/spring-boot-mongo
+    - name: remove the docker image
+      command: docker image rmi westuser/spring-boot-mongo
+      ignore_errors: yes

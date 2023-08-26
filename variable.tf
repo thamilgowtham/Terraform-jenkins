@@ -67,9 +67,6 @@ variable "rname" {
 variable "amiid" {
   default = "ami-0c65adc9a5c1b5d7c" 
 }
-variable "amiid2" {
-  default = "ami-03f65b8614a860c29" 
-}
 variable "instype" {
   default = "t2.medium"
 }

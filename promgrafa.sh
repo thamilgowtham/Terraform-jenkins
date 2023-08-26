@@ -37,11 +37,6 @@ ExecStart=/usr/local/bin/prometheus \
 
 [Install]
 WantedBy=multi-user.target' > /etc/systemd/system/prometheus.service
-cat >>/etc/prometheus/prometheus.yml<<EOF
-- job_name: "Jenkins_Job"
-  static_configs:
-    - targets: ["<Public IP of Jenkins Node:8080"]
-EOF
 sudo systemctl daemon-reload
 sudo systemctl enable prometheus
 sudo systemctl start prometheus

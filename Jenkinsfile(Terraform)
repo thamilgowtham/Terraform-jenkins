@@ -12,7 +12,7 @@ pipeline{
                 sh 'terraform init'
             }
         }
-        stage('Terraform ${action}'){
+        stage('Terraform Action'){
             steps{
                withCredentials([[
                     $class: 'AmazonWebServicesCredentialsBinding',

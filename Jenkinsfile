@@ -6,7 +6,7 @@ pipeline{
     stages {
         stage('Git Checkout') {
             steps {
-                git url:'https://github.com/thamilgowtham/Terraform-jenkins.git', branch: 'main'
+                git url:'https://github.com/thamilgowtham/spring-boot-mongo.git', branch: 'master'
             }
         }
          stage('Maven Build'){
@@ -35,10 +35,10 @@ pipeline{
 	       ], 
 	    credentialsId: 'nexus-credentials', 
 	    groupId: 'com.mt', 
-	    nexusUrl: '34.216.109.0:8081', 
+	    nexusUrl: '52.32.99.198:8081', 
 	    nexusVersion: 'nexus3', 
 	    protocol: 'http', 
-	    repository: 'springapprepo', 
+	    repository: 'spring-boot-mongo', 
 	    version: '1.0'
              }
         }
@@ -62,4 +62,4 @@ pipeline{
             }
         }
     }
-}
+}	

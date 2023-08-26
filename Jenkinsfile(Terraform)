@@ -12,15 +12,14 @@ pipeline{
                 sh 'terraform init'
             }
         }
-        stage('Terraform Action'){
+        stage('Terraform ${action}'){
             steps{
                withCredentials([[
                     $class: 'AmazonWebServicesCredentialsBinding',
                     credentialsId: "aws_cred",
                     accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                     secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) { 
-                sh 'echo Terraform Action is --> ${action}'
-                sh 'terraform ${action} --auto-approve'
+                    sh 'terraform ${action} --auto-approve'
                 }
             }
         }

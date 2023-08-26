@@ -80,7 +80,7 @@ resource "aws_instance" "Knode_EC2" {
 }
 resource "aws_instance" "promgrafa_EC2" {
   key_name               = var.keyname
-  ami                    = var.amiid2
+  ami                    = var.amiid
   instance_type          = var.instype
   network_interface {
     network_interface_id = aws_network_interface.mynet6.id

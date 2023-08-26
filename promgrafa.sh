@@ -1,5 +1,7 @@
 #!/bin/bash
 sudo apt update
+sudo apt install openjdk-17-jre -y
+sudo apt update
 sudo groupadd --system prometheus
 sudo useradd -s /sbin/nologin --system -g prometheus prometheus
 sudo mkdir /etc/prometheus
@@ -35,18 +37,22 @@ ExecStart=/usr/local/bin/prometheus \
 
 [Install]
 WantedBy=multi-user.target' > /etc/systemd/system/prometheus.service
+cat >>/etc/prometheus/prometheus.yml<<EOF
+- job_name: "Jenkins_Job"
+  static_configs:
+    - targets: ["<Public IP of Jenkins Node:8080"]
+EOF
 sudo systemctl daemon-reload
 sudo systemctl enable prometheus
 sudo systemctl start prometheus
 # Install Grafana
-sudo apt update
+sudo apt-get update -y
 sudo apt-get install -y apt-transport-https
 sudo apt-get install -y software-properties-common wget
 sudo wget -q -O /usr/share/keyrings/grafana.key https://apt.grafana.com/gpg.key
 echo "deb [signed-by=/usr/share/keyrings/grafana.key] https://apt.grafana.com stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
-sudo apt-get update
+sudo apt-get update -y
 sudo apt-get install grafana
+sudo systemctl enable grafana-server
 sudo systemctl start grafana-server
-sudo apt update
-sudo apt install openjdk-17-jre -y
 sudo hostnamectl set-hostname promgrafa

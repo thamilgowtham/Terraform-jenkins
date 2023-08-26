@@ -42,7 +42,7 @@ pipeline{
 	    version: '1.0'
              }
         }
-        stage('Docker build & Docker image push to Dockerhub'){
+        stage('Build & Push image to Dockerhub'){
          steps{
            script{
            withCredentials([string(credentialsId: 'dochub_id', variable: 'docker_cred')]) {
@@ -62,4 +62,4 @@ pipeline{
             }
         }
     }
-}	
+}
